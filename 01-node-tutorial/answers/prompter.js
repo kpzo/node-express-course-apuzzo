@@ -1,5 +1,5 @@
 const http = require("http");
-var StringDecoder = require("string_decoder").StringDecoder;
+const StringDecoder = require("string_decoder").StringDecoder;
 
 const getBody = (req, callback) => {
   const decode = new StringDecoder("utf-8");
@@ -14,51 +14,61 @@ const getBody = (req, callback) => {
     const resultHash = {};
     bodyArray.forEach((part) => {
       const partArray = part.split("=");
-      resultHash[partArray[0]] = partArray[1];
+      resultHash[partArray[0]] = decodeURIComponent(partArray[1]);
     });
     callback(resultHash);
   });
 };
 
-// here, you could declare one or more variables to store what comes back from the form.
-let item = "Enter something below.";
+let item = "I'd love to know!";
+let items = [];
 
-// here, you can change the form below to modify the input fields and what is displayed.
-// This is just ordinary html with string interpolation.
 const form = () => {
   return `
+  <head>
+    <style>
+      body {background: orange; font-family: Arial, sans-serif; margin: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
+      p { font-size: 20px; font-weight: bold; text-align: center; }
+      form { margin-top: 20px; display: flex; justify-content: center; }
+      button { margin-right: 10px; padding: 10px 20px; font-size: 16px; cursor: pointer; }
+      ul { margin-top: 20px; list-style-type: none; padding: 0; }
+      li { margin-bottom: 10px; padding: 10px; border-radius: 5px; text-align: center; }
+    </style>
+  </head>
   <body>
-  <p>${item}</p>
-  <form method="POST">
-  <input name="item"></input>
-  <button type="submit">Submit</button>
-  </form>
+    <h1>How was your day?</h1>
+    <p>${item}</p>
+    <form method="POST">
+      <button type="submit" name="item" value="${encodeURIComponent('Awesome!')}">Great!</button>
+      <button type="submit" name="item" value="${encodeURIComponent("I'll take it!")}">Okay..</button>
+      <button type="submit" name="item" value="${encodeURIComponent("Oh, I'm sorry.")}">Bad.</button>
+    </form>
+    <ul>
+      ${items.map(i => `<li>${i}</li>`).join('')}
+    </ul>
   </body>
   `;
 };
 
 const server = http.createServer((req, res) => {
-  console.log("req.method is ", req.method);
-  console.log("req.url is ", req.url);
   if (req.method === "POST") {
     getBody(req, (body) => {
-      console.log("The body of the post is ", body);
-      // here, you can add your own logic
       if (body["item"]) {
         item = body["item"];
       } else {
         item = "Nothing was entered.";
       }
-      // Your code changes would end here
-      res.writeHead(303, {
-        Location: "/",
-      });
+      res.writeHead(303, { Location: "/" });
       res.end();
     });
   } else {
+    res.writeHead(200, { "Content-Type": "text/html" });
     res.end(form());
   }
 });
 
-server.listen(3000);
-console.log("The server is listening on port 3000.");
+
+
+server.listen(3000, () => {
+  console.log("The server is listening on port 3000.");
+});
