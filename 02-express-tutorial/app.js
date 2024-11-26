@@ -40,16 +40,16 @@ app.get('/api/v1/query', (req, res) => {
             return product.name.startsWith(search)
         })
     }
-    if(limit){
-        sortedProducts = sortedProducts.slice(0, Number(limit))
-    }
     if(price){
         sortedProducts = sortedProducts.filter((product) => {
             return product.price <= Number(price)
         })
+    if(limit){
+        sortedProducts = sortedProducts.slice(0, Number(limit))
+    }
     }
     if(sortedProducts.length <1){
-        res.status(200).json({success: true, data: []})
+        res.status(200).json({success: true, data: sortedProducts})
     }
     res.status(200).json(sortedProducts)
 });
