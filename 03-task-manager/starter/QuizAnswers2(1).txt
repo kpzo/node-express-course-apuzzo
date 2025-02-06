@@ -1,0 +1,15 @@
+1. We created a middleware function called asyncWrapper because the controller/tasks.js file
+    was becoming too repetitive. There was redundancy in each operation, speciically in the 
+    try/catch model. By consolidating the logic that repeated itself into a separate middleware 
+    file, we are able to create a more readable and scalable code.
+
+2. Complete the code:
+
+const getTask = asyncWrapper(async (req, res, next) => {  
+  const { id: taskID } = req.params;  
+  const task = await Task.findOne({ _id: taskID });  
+  if (!task) {  
+    return next(customQuizError(`Task ${taskID} does not exist.`, 404))
+  }  
+  res.status(200).json({ task });  
+});  
