@@ -6,6 +6,7 @@ const resultDOM = document.querySelector('.result')
 const btnDOM = document.querySelector('#data')
 const tokenDOM = document.querySelector('.token')
 
+// listening for the submit event
 formDOM.addEventListener('submit', async (e) => {
   formAlertDOM.classList.remove('text-success')
   tokenDOM.classList.remove('text-success')
@@ -24,6 +25,7 @@ formDOM.addEventListener('submit', async (e) => {
     usernameInputDOM.value = ''
     passwordInputDOM.value = ''
 
+    // records token in local storage
     localStorage.setItem('token', data.token)
     resultDOM.innerHTML = ''
     tokenDOM.textContent = 'token present'
@@ -41,6 +43,7 @@ formDOM.addEventListener('submit', async (e) => {
   }, 2000)
 })
 
+// button: listening for the click event
 btnDOM.addEventListener('click', async () => {
   const token = localStorage.getItem('token')
   try {
